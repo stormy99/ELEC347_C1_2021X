@@ -18,7 +18,8 @@ AnalogOut Aoutput(PA_4);                   //Analog Output (Signal Input 0 to +3
 
 Ticker sample_timer;
 
-RTFILTER filter(96000, 16000, 20, 2);
+int fo[5] = {125, 500, 4000, 8000, 16000};
+RTFILTER filter(96000, fo[1], 20, 2);
 float input = 0.0;
 
 //Ticker routine to service samples from Analogue IP and port to Analogue Output
@@ -28,8 +29,9 @@ void sampler(void)
     SampPin = ON;
 
     input = Ainput;
-    filter.rtFilterSetValue();
+    filter.rtFilterSetValue(input);
     Aoutput = filter.rtFilterGetValue();
+    
 
     SampLED = OFF;      //LED Indicates end of sampling
     SampPin = OFF;
@@ -39,11 +41,16 @@ int main()
 {
     filter.rtFilterDefine();
     filter.rtFilterPrint();
+
     float sample_rate=(1.0/Fs)*1000000.0; //Calculate the number of uS required for a Frequency Sampling Rate
                                           //Fs held in init.h
+
     sample_timer.attach_us(&sampler,(int)sample_rate);
                                           //Ticker Instance serviced by routine at a repeat rate in microseconds
+    sample_timer.detach();
+
     while(1) {
+        sampler();
         //sleep();
     }
 }

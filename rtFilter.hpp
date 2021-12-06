@@ -70,6 +70,6 @@ class RTFILTER
             void rtFilterUpdateQ(int newQ); // Set rtFilter Q-factor
             int rtFilterGetQ(void); // Get current rtFilter Q-factor
 
-            void rtFilterSetValue(void); // Set latest rtFilter xn input sample
+            void rtFilterSetValue(float input); // Set latest rtFilter xn input sample
             float rtFilterGetValue(void); // Get latest rtFilter yn output sample
 };

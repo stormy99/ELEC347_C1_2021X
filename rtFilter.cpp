@@ -4,10 +4,10 @@
 #include "rtFilter.hpp"
 
 // Definitions
-#define Pi 3.141592653
+#define Pi 3.141592
 
-AnalogIn  Ain(PA_6);                    //Analog Input (Signal Input 0 to +3 Volts)   "SIG IN" on BREAKOUT MEGA SHELL PCB
-AnalogOut Aout(PA_4);                   //Analog Output (Signal Input 0 to +3 Volts)  "DAC1 OUT" on BREAKOUT MEGA SHELL PCB
+AnalogIn  Ain(PA_6); // Analog Input (Signal Input 0 to +3 Volts) "SIG IN" on BREAKOUT MEGA SHELL PCB
+AnalogOut Aout(PA_4); // Analog Output (Signal Input 0 to +3 Volts) "DAC1 OUT" on BREAKOUT MEGA SHELL PCB
 
 // RTFILTER Class Constructor
 RTFILTER::RTFILTER(int fs, int Fo, double boost, int Q)
@@ -39,11 +39,15 @@ RTFILTER::RTFILTER(int fs, int Fo, double boost, int Q)
     _xn = 0;
     _xnm1 = 0;
     _xnm2 = 0;
+    _xnm3 = 0;
+    _xnm4 = 0;
 
     // Initialising '' with default values for the RTFILTER class
     _yn = 0;
     _ynm1 = 0;
     _ynm2 = 0;
+    _ynm3 = 0;
+    _ynm4 = 0;
 }
 
 // RTFILTER Class Deconstructor
@@ -116,14 +120,13 @@ int RTFILTER::rtFilterGetQ(void)
 }
 
 // Set latest rtFilter xn input sample
-void RTFILTER::rtFilterSetValue(void)
+void RTFILTER::rtFilterSetValue(float value)
 {
-    _xn = Ain; // Input ADC, xn, Mbed uses 0.0 -> 1.0 float
+    _xn = value; // Input ADC, xn, Mbed uses 0.0 -> 1.0 float
     _centreTap = (_xn * _b0) + (_xnm1 * _b1) + (_xnm2 * _b2) + (_xnm3 * _b3) + (_xnm4 * _b4); // Graphic EQ - IIR Filter (Real-time)
     _yn = (_centreTap * _a0) - (_ynm1 * _a1) - (_ynm2 * _a2) - (_ynm3 * _a3) - (_ynm4 * _a4); // Output yn
 
     _filterOutput = _yn + 0.5f; // Mbed uses 0.0 -> 1.0 float
-    Aout = _filterOutput; // Output resultant value to the DAC
 
     // Loaded in this specific order because otherwise all xnm values will become equal to xn
     _xnm4 = _xnm3;
