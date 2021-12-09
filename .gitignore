@@ -5,3 +5,10 @@ projectfiles
 mbed-os
 BUILD
 
+dsp.uvguix.Tom
+dsp.uvoptx
+dsp.uvprojx
+objects/*
+RTE/*
+DebugConfig/Target_1_STM32F429ZITx.dbgconf
+Listings/dsp.map
